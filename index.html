@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>bakery app layout</title>
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
+  <link rel="import" href="vaadin-navbar-layout.html">
+  <link rel="import" href="vaadin-navbar.html">
+  <link rel="import" href="vaadin-nav-item.html">
+
+  <link rel="import" href="vaadin-avatar.html">
+
+  <link rel="import" href="bower_components/vaadin-button/vaadin-button.html">
+  <link rel="import" href="bower_components/vaadin-text-field/vaadin-text-field.html">
+  <link rel="import" href="bower_components/vaadin-checkbox/vaadin-checkbox.html">
+
+  <link rel="import" href="bower_components/vaadin-themes/valo/vaadin-button.html">
+  <link rel="import" href="bower_components/vaadin-themes/valo/vaadin-text-field.html">
+  <link rel="import" href="bower_components/vaadin-themes/valo/vaadin-checkbox.html">
+
+  <link rel="import" href="bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="bower_components/vaadin-themes/valo/icons.html">
+
+  <custom-style>
+    <style include="valo-typography valo-colors">
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0 auto;
+        counter: item;
+        max-width: calc(960px - 32px);
+      }
+
+      li {
+        height: 56px;
+        padding: 16px;
+        background: #fff;
+        box-shadow: 0 2px 5px 0 var(--valo-shade-10pct);
+        border-radius: 4px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        counter-increment: item;
+      }
+
+      li::before {
+        content: counter(item);
+        display: inline-block;
+        margin-right: 2em;
+      }
+    </style>
+  </custom-style>
+
+  <style>
+    [unresolved] {
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body unresolved>
+
+  <vaadin-navbar-layout>
+    <vaadin-navbar slot="menubar">
+      <div slot="branding">Café<br>Sunshine</div>
+
+      <vaadin-nav-item icon="valo:edit" label="Storefront" selected></vaadin-nav-item>
+      <vaadin-nav-item icon="valo:clock" label="Dashboard"></vaadin-nav-item>
+      <vaadin-nav-item icon="valo:user" label="Users"></vaadin-nav-item>
+      <vaadin-nav-item icon="valo:calendar" label="Products"></vaadin-nav-item>
+      <vaadin-nav-item icon="valo:cog" label="Admin"></vaadin-nav-item>
+
+      <!-- TODO the user menu should be a custom element -->
+      <vaadin-button theme="tertiary small contrast icon" slot="user-menu">
+        <vaadin-avatar small badge-top-right></vaadin-avatar>
+        <span>Kate</span>
+        <iron-icon icon="valo:dropdown"></iron-icon>
+      </vaadin-button>
+    </vaadin-navbar>
+
+    <vaadin-text-field placeholder="Search orders" slot="search-field">
+      <iron-icon icon="valo:magnifier" slot="prefix"></iron-icon>
+    </vaadin-text-field>
+
+    <vaadin-checkbox slot="search-tools">Show past orders</vaadin-checkbox>
+    <vaadin-checkbox slot="search-tools">Another option</vaadin-checkbox>
+
+    <vaadin-button theme="primary icon" slot="tools">
+      <iron-icon icon="valo:plus"></iron-icon>
+      <span>New order</span>
+    </vaadin-button>
+
+    <ul slot="content">
+      <li>Lorem ipsum dolor</li>
+      <li>Sit amet, consectetur</li>
+      <li>Adipisicing elit, sed</li>
+      <li>Do eiusmod tempor</li>
+      <li>Incididunt ut labore</li>
+      <li>Et dolore magna</li>
+      <li>Aliqua. Ut enim</li>
+      <li>Ad minim veniam,</li>
+      <li>Quis nostrud exercitation</li>
+      <li>Ullamco laboris nisi</li>
+      <li>Ut aliquip ex</li>
+      <li>Ea commodo consequat.</li>
+      <li>Duis aute irure</li>
+      <li>Dolor in reprehenderit</li>
+      <li>In voluptate velit</li>
+      <li>Esse cillum dolore</li>
+      <li>Eu fugiat nulla</li>
+      <li>Pariatur. Excepteur sint</li>
+      <li>Occaecat cupidatat non</li>
+      <li>Proident, sunt in</li>
+      <li>Culpa qui officia</li>
+      <li>Deserunt mollit anim</li>
+      <li>Id est laborum.</li>
+      <li>Donec elementum ligula</li>
+      <li>Eu sapien consequat</li>
+      <li>Eleifend. Donec nec</li>
+      <li>Dolor erat, condimentum</li>
+      <li>Sagittis sem. Praesent</li>
+      <li>Porttitor porttitor risus,</li>
+      <li>Dapibus rutrum ipsum</li>
+      <li>Gravida et. Integer</li>
+      <li>Lectus nisi, facilisis</li>
+      <li>Sit amet eleifend</li>
+      <li>Nec, pharetra ut</li>
+      <li>Augue. Integer quam</li>
+      <li>Nunc, consequat nec</li>
+      <li>Egestas ac, volutpat</li>
+    </ul>
+  </vaadin-navbar-layout>
+
+</body>
+
+</html>

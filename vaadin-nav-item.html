@@ -1,0 +1,88 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+
+<dom-module id="vaadin-nav-item">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        text-align: center;
+        padding: 4px 8px;
+        cursor: pointer;
+        transition: 0.3s color, 0.3s transform;
+        will-change: transform;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        font-size: var(--valo-font-size-s);
+        color: var(--valo-secondary-text-color);
+        font-weight: 500;
+        line-height: 1.3;
+      }
+
+      :host(:not([selected]):active) {
+        transform: scale(0.95);
+        transition-duration: 0s;
+      }
+
+      .icon {
+        color: var(--valo-contrast-40pct);
+      }
+
+      :host([selected]) {
+        cursor: default;
+      }
+
+      :host([selected]),
+      :host([selected]) .icon {
+        color: var(--valo-primary-text-color);
+      }
+
+      :host(:not([selected]):hover) {
+        color: var(--valo-body-text-color);
+      }
+    </style>
+
+    <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+    <div class="label">[[label]]</div>
+
+  </template>
+  <script>
+    if (!Polymer.Element) {
+      throw new Error(`Unexpected Polymer version ${Polymer.version} is used, expected v2.0.0 or later.`);
+    }
+
+    (function() {
+      class NavItemElement extends Polymer.Element {
+        static get is() {
+          return 'vaadin-nav-item';
+        }
+        static get properties() {
+          return {
+            icon: {
+              type: String
+            },
+
+            label: {
+              type: String
+            },
+
+            selected: {
+              type: Boolean,
+              value: false,
+              reflectToAttribute: true
+            }
+          }
+        }
+      }
+
+      customElements.define(NavItemElement.is, NavItemElement);
+
+      /**
+       * @namespace Vaadin
+       */
+      window.Vaadin = window.Vaadin || {};
+      Vaadin.NavItemElement = NavItemElement;
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,29 @@
+{
+  "name": "bakery-layout-proto",
+  "authors": [
+    "Jouni Koivuviita <jouni@jouni.me>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vaadin-button": "vaadin/vaadin-button#^1.0.0",
+    "vaadin-text-field": "vaadin/vaadin-text-field#^1.0.0",
+    "vaadin-checkbox": "vaadin/vaadin-checkbox#^1.0.0-alpha3",
+    "vaadin-themes": "vaadin/vaadin-themes#master",
+    "iron-icon": "PolymerElements/iron-icon#^2.0.1",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^2.0.1"
+  },
+  "resolutions": {
+    "vaadin-themes": "master"
+  }
+}
