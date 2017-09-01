@@ -1,0 +1,306 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+
+<dom-module id="vaadin-navbar-layout">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+        background-color: var(--valo-contrast-5pct);
+        --menubar-height: 64px;
+      }
+
+      .app-header {
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1);
+        flex: none;
+        position: relative;
+        z-index: 1;
+      }
+
+      .app-header::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 10px;
+        box-shadow: 0 0 16px 2px rgba(0, 0, 0, 0.2);
+        bottom: 0;
+        border-radius: 50%;
+        opacity: 1;
+      }
+
+      @media screen and (max-width: 600px) {
+        .app-header {
+          box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.1);
+          order: 1;
+          /*top: auto;
+          bottom: 0;*/
+        }
+
+        .app-header::before {
+          top: 0;
+          bottom: auto;
+          height: 10px;
+          box-shadow: 0 0 16px 2px rgba(0, 0, 0, 0.2);
+          bottom: 0;
+          border-radius: 50%;
+          opacity: 1;
+        }
+
+        .menubar {
+          order: 1;
+        }
+      }
+
+      .menubar,
+      .toolbar {
+        background-color: #fff;
+      }
+
+      .app-content {
+        flex: auto;
+        padding: 16px;
+        box-sizing: border-box;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        transition: 0.2s margin-top, 0.2s margin-bottom;
+      }
+
+      .toolbar {
+        position: relative;
+      }
+
+      .toolbar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        background-color: var(--valo-contrast-10pct);
+        opacity: 0;
+        transition: 0.3s opacity;
+        will-change: opacity;
+      }
+
+      /* TODO this is ugly, try to make it work without a wrapper */
+      .toolbar > .wrapper {
+        flex: auto;
+        display: flex;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 8px 16px;
+        box-sizing: border-box;
+      }
+
+      .search {
+        flex: auto;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search ::slotted([slot=search-field]) {
+        flex: auto;
+        margin-right: 8px;
+        min-width: 50%;
+      }
+
+      .search-tools,
+      .clear-search,
+      .tools {
+        transition: 0.3s 0.1s opacity;
+        will-change: opacity;
+      }
+
+      .app-header:not(.search-active) .search-tools,
+      .app-header:not(.search-active) .clear-search,
+      .app-header.search-active .tools {
+        position: absolute;
+        width: 0;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0s;
+      }
+
+      .search-active .toolbar::before {
+        opacity: 1;
+      }
+
+      @media screen and (max-width: 600px) {
+        .toolbar > .wrapper,
+        .app-content {
+          padding-left: 8px;
+          padding-right: 8px;
+        }
+      }
+
+      .menubar {
+        height: var(--menubar-height);
+      }
+
+      .app-header {
+        transition: 0.2s transform !important;
+      }
+
+      .search-active {
+        transform: translateY(calc(var(--menubar-height) * -1));
+      }
+
+      .search-active + .app-content {
+        margin-top: calc(var(--menubar-height) * -1);
+      }
+
+      @media screen and (max-width: 600px) {
+        .search-active {
+          transform: translateY(var(--menubar-height));
+        }
+        .search-active + .app-content {
+          margin-top: 0;
+          margin-bottom: calc(var(--menubar-height) * -1);
+        }
+      }
+
+      /* TODO this is quite an ugly and specific hack */
+      .tools ::slotted(vaadin-button) {
+        margin-right: 0;
+      }
+    </style>
+
+    <div class="app-header">
+      <div class="menubar">
+        <slot name="menubar"></slot>
+      </div>
+
+      <div class="toolbar">
+        <div class="wrapper">
+          <slot name="toolbar">
+            <div class="search">
+              <slot name="search-field"></slot>
+              <div class="search-tools">
+                <slot name="search-tools"></slot>
+              </div>
+            </div>
+            <vaadin-button theme="tertiary" class="clear-search">Cancel</vaadin-button>
+            <div class="tools">
+              <slot name="tools"></slot>
+            </div>
+          </slot>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-content">
+      <slot name="content"></slot>
+    </div>
+
+  </template>
+  <script>
+    if (!Polymer.Element) {
+      throw new Error(`Unexpected Polymer version ${Polymer.version} is used, expected v2.0.0 or later.`);
+    }
+
+    (function() {
+      class NavbarLayoutElement extends Polymer.Element {
+        static get is() {
+          return 'vaadin-navbar-layout';
+        }
+
+        ready() {
+          super.ready();
+
+          // Not iPad
+          this._ios = /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+          this.field = this.querySelector('[slot=search-field]');
+          this.toolbar = this.root.querySelector('.toolbar');
+
+          // Prepare to catch the transtiion ending for the search field
+          this.field.addEventListener('transitionend', function(e) {
+            this.field.style.transition = '';
+            this.toolbar.style.height = '';
+            this.toolbar.style.transition = '';
+          }.bind(this));
+
+          this.field.addEventListener('focus', function(e) {
+            this.toggleSearch(true);
+          }.bind(this));
+
+          this.field.addEventListener('blur', function(e) {
+            if (this.field.value.length == 0) {
+              this.toggleSearch(false);
+            }
+
+            if (this._ios) {
+              document.body.style.height = '';
+            }
+          }.bind(this));
+
+          this.root.querySelector('.clear-search').addEventListener('click', function(e) {
+            this.toggleSearch(false);
+          }.bind(this));
+        }
+
+        toggleSearch(active) {
+          // FLIP animate the search field
+
+          // Get the starting measures
+          var fieldStart = this.field.getBoundingClientRect();
+          var toolbarStart = this.toolbar.getBoundingClientRect();
+
+          // Trigger the ending measures
+          if (active) {
+            this.root.querySelector('.app-header').classList.add("search-active");
+          } else {
+            this.field.value = '';
+            this.root.querySelector('.app-header').classList.remove("search-active");
+          }
+
+          // Get the ending measures
+          var fieldEnd = this.field.getBoundingClientRect();
+          var toolbarEnd = this.toolbar.getBoundingClientRect();
+
+          // Set the starting width and transition
+          this.field.style.transform = `scalex(${fieldStart.width/fieldEnd.width})`;
+          this.field.style.transformOrigin = '0 0';
+          this.toolbar.style.height = toolbarStart.height + 'px';
+
+          // Trigger the animation
+          requestAnimationFrame(function() {
+            this.field.style.transition = '0.2s transform';
+            this.field.style.transform = '';
+            this.toolbar.style.transition = '0.2s height';
+            this.toolbar.style.height = toolbarEnd.height + 'px';
+          }.bind(this));
+
+          // Compensate for iOS on-screen-keyboard.
+          // The keyboard transition/animation takes around 100-300ms
+          if (active && this._ios) {
+            setTimeout(function() {
+              var offset = document.body.getBoundingClientRect();
+              document.body.style.height = `calc(100% - ${-offset.top - 10}px)`;
+              // To get a smoother experience, we could try transitioning scrollTop with JS, to
+              // compensate for iOS’s own transition (less jarring jump for the end user in the end)
+              document.body.scrollTop = 0;
+            }.bind(this), 150);
+          }
+        }
+      }
+
+      customElements.define(NavbarLayoutElement.is, NavbarLayoutElement);
+
+      /**
+       * @namespace Vaadin
+       */
+      window.Vaadin = window.Vaadin || {};
+      Vaadin.NavbarLayoutElement = NavbarLayoutElement;
+    })();
+  </script>
+</dom-module>

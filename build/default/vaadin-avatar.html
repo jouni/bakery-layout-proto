@@ -1,0 +1,112 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+
+<dom-module id="vaadin-avatar">
+  <template>
+    <style>
+      :host {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        width: 64px;
+        height: 64px;
+        margin: 0 8px;
+        border-radius: 50%;
+        background-color: var(--valo-base-color);
+        overflow: visible !important;
+        box-shadow: 0 1px 2px 1px var(--valo-shade-10pct), 0 1px 1px 0 var(--valo-shade-10pct);
+      }
+
+      :host([small]) {
+        width: 32px;
+        height: 32px;
+      }
+
+      iron-icon,
+      img {
+        border-radius: inherit;
+        width: 100%;
+        height: 100%;
+      }
+
+      iron-icon {
+        padding: 4px;
+        box-sizing: border-box;
+        color: var(--valo-contrast-40pct);
+      }
+
+      .badge {
+        position: absolute;
+        border-radius: 1em;
+        overflow: hidden;
+        font-size: 11px;
+        background-color: var(--valo-error-color);
+        color: var(--valo-error-contrast-color);
+        min-height: 1.4em;
+        min-width: 1.4em;
+        padding: 0 4px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      .badge:empty {
+        min-width: 9px;
+        min-height: 9px;
+        padding: 0;
+      }
+
+      .badge.top-right {
+        top: 8%;
+        right: 8%;
+      }
+
+      :host([small]) .badge.top-right {
+        top: 0;
+        right: 0;
+      }
+
+    </style>
+
+    <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+    <span class="badge top-right">[[badgeTopRight]]</span>
+
+  </template>
+  <script>
+    if (!Polymer.Element) {
+      throw new Error(`Unexpected Polymer version ${Polymer.version} is used, expected v2.0.0 or later.`);
+    }
+
+    (function() {
+      class AvatarElement extends Polymer.Element {
+        static get is() {
+          return 'vaadin-avatar';
+        }
+        static get properties() {
+          return {
+            small: {
+              type: Boolean,
+              reflectToAttribute: true
+            },
+
+            icon: {
+              type: String,
+              value: 'valo:user'
+            },
+
+            badgeTopRight: {
+              type: String
+            }
+          }
+        }
+      }
+
+      customElements.define(AvatarElement.is, AvatarElement);
+
+      /**
+       * @namespace Vaadin
+       */
+      window.Vaadin = window.Vaadin || {};
+      Vaadin.AvatarElement = AvatarElement;
+    })();
+  </script>
+</dom-module>

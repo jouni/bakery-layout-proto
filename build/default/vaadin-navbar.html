@@ -1,0 +1,133 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+
+<dom-module id="vaadin-navbar">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :host ::slotted([slot=branding]) {
+        font-weight: 500;
+        font-size: var(--valo-font-size-m);
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+
+      .nav-items-wrapper {
+        flex-grow: 0.5;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .prefix,
+      .suffix {
+        flex-grow: 1;
+      }
+
+      .suffix {
+        text-align: right;
+      }
+
+      .nav-items {
+        display: flex;
+      }
+
+      .nav-items ::slotted(vaadin-nav-item) {
+        margin: 0 auto;
+      }
+
+      .suffix ::slotted([slot=user-menu]) {
+        color: var(--valo-secondary-text-color);
+        min-height: 36px;
+      }
+
+      @media screen and (max-width: 600px) {
+        :host {
+          padding-left: 0;
+          padding-right: 0;
+        }
+
+        .prefix {
+          display: none;
+        }
+
+        .suffix {
+          flex: none;
+        }
+
+        .suffix ::slotted([slot=user-menu]) {
+          position: fixed;
+          top: 16px;
+          right: 16px;
+        }
+
+        .suffix ::slotted([slot=user-menu]) :not(vaadin-avatar) {
+          display: none;
+        }
+
+        .nav-items-wrapper {
+          flex-grow: 1;
+        }
+
+        .nav-items ::slotted(vaadin-nav-item) {
+          font-size: var(--valo-font-size-xs);
+          line-height: inherit;
+          flex-basis: 0;
+          flex-grow: 1;
+        }
+      }
+    </style>
+
+    <div class="prefix">
+      <slot name="branding"></slot>
+    </div>
+
+    <div class="nav-items-wrapper">
+      <div class="nav-items">
+        <slot></slot>
+      </div>
+    </div>
+
+    <div class="suffix">
+      <slot name="user-menu"></slot>
+    </div>
+  </template>
+  <script>
+    if (!Polymer.Element) {
+      throw new Error(`Unexpected Polymer version ${Polymer.version} is used, expected v2.0.0 or later.`);
+    }
+
+    (function() {
+      class NavbarElement extends Polymer.Element {
+        static get is() {
+          return 'vaadin-navbar';
+        }
+
+        ready() {
+          super.ready();
+
+          this.addEventListener('click', function(e) {
+            if (e.target.nodeName.toLowerCase() == 'vaadin-nav-item') {
+              Array.from(this.querySelectorAll('vaadin-nav-item')).forEach(function(item) {
+                item.selected = (item == e.target);
+              });
+            }
+          }.bind(this));
+        }
+      }
+
+      customElements.define(NavbarElement.is, NavbarElement);
+
+      /**
+       * @namespace Vaadin
+       */
+      window.Vaadin = window.Vaadin || {};
+      Vaadin.NavbarElement = NavbarElement;
+    })();
+  </script>
+</dom-module>
