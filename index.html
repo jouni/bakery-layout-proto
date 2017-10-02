@@ -16,17 +16,29 @@
   <link rel="import" href="vaadin-nav-item.html">
 
   <link rel="import" href="vaadin-avatar.html">
+  <link rel="import" href="vaadin-autocomplete.html">
+
 
   <link rel="import" href="bower_components/vaadin-button/vaadin-button.html">
   <link rel="import" href="bower_components/vaadin-text-field/vaadin-text-field.html">
+  <!-- <link rel="import" href="bower_components/vaadin-combo-box/vaadin-combo-box.html"> -->
+  <link rel="import" href="bower_components/vaadin-date-picker/vaadin-date-picker.html">
   <link rel="import" href="bower_components/vaadin-checkbox/vaadin-checkbox.html">
+  <link rel="import" href="bower_components/vaadin-grid/vaadin-grid.html">
+  <link rel="import" href="bower_components/vaadin-grid/vaadin-grid-column.html">
+  <link rel="import" href="bower_components/vaadin-grid/vaadin-grid-sorter.html">
 
-  <link rel="import" href="bower_components/vaadin-themes/valo/vaadin-button.html">
-  <link rel="import" href="bower_components/vaadin-themes/valo/vaadin-text-field.html">
-  <link rel="import" href="bower_components/vaadin-themes/valo/vaadin-checkbox.html">
+  <link rel="import" href="bower_components/vaadin-valo-theme/vaadin-button.html">
+  <link rel="import" href="bower_components/vaadin-valo-theme/vaadin-text-field.html">
+  <link rel="import" href="bower_components/vaadin-valo-theme/vaadin-combo-box.html">
+  <link rel="import" href="bower_components/vaadin-valo-theme/vaadin-date-picker.html">
+  <link rel="import" href="bower_components/vaadin-valo-theme/vaadin-checkbox.html">
+  <link rel="import" href="bower_components/vaadin-valo-theme/vaadin-grid.html">
+
+  <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
 
   <link rel="import" href="bower_components/iron-icon/iron-icon.html">
-  <link rel="import" href="bower_components/vaadin-themes/valo/icons.html">
+  <link rel="import" href="bower_components/vaadin-valo-theme/icons.html">
 
   <custom-style>
     <style include="valo-typography valo-colors">
@@ -37,7 +49,7 @@
         padding: 0;
       }
 
-      ul {
+      /*ul {
         list-style: none;
         padding: 0;
         margin: 0 auto;
@@ -48,7 +60,7 @@
       li {
         height: 56px;
         padding: 16px;
-        background: #fff;
+        background: var(--valo-base-color);
         box-shadow: 0 2px 5px 0 var(--valo-shade-10pct);
         border-radius: 4px;
         margin-bottom: 8px;
@@ -61,6 +73,200 @@
         content: counter(item);
         display: inline-block;
         margin-right: 2em;
+      }*/
+
+      vaadin-avatar {
+        vertical-align: middle;
+      }
+
+      [slot="search-tools"] {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        font-size: var(--valo-font-size-s);
+        color: var(--valo-tertiary-text-color);
+        margin-right: 1em;
+      }
+
+      .date vaadin-date-picker {
+        width: 100%;
+        min-width: 0;
+      }
+
+      [slot="search-tools"] .separator {
+        margin: 0 4px;
+      }
+
+      .date {
+        min-width: 20em;
+        flex: 2;
+      }
+
+      .min-max {
+        min-width: 10em;
+      }
+
+      @media (max-width: 33em) {
+        .date,
+        .min-max {
+          min-width: calc(100vw - 16px);
+        }
+      }
+
+
+      .min-max vaadin-text-field {
+        width: 100%;
+      }
+
+      .min-max vaadin-text-field [slot="prefix"] {
+        color: var(--valo-tertiary-text-color);
+      }
+
+      .status vaadin-checkbox {
+        flex: none;
+      }
+
+      [slot="content"] {
+        display: flex;
+        height: 100%;
+      }
+
+      vaadin-navbar-layout {
+        --vaadin-navbar-layout-content-max-width: calc(100% - 300px);
+      }
+
+      vaadin-grid {
+        width: 100%;
+        max-width: calc(var(--vaadin-navbar-layout-content-max-width) - 16px);
+        height: 100%;
+        box-shadow: 0 0 0 1px var(--valo-shade-5pct), 0 2px 6px var(--valo-shade-10pct);
+        border: 0;
+        font-size: 14px;
+      }
+
+      vaadin-navbar-layout {
+        /* Align the content to the left so we can fit the chart on the right side */
+        --vaadin-navbar-layout-toolbar-margin-left: 0;
+      }
+
+      .info-panel {
+        flex: auto;
+        background-color: var(--valo-contrast-5pct);
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 16px;
+        transition: 0.2s opacity;
+      }
+
+      vaadin-navbar-layout[search-active] .info-panel {
+        opacity: 0.6;
+      }
+
+      .info-panel .card {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        min-width: 200px;
+        min-height: 140px;
+        background-color: var(--valo-primary-color);
+        color: var(--valo-primary-contrast-color);
+        border-radius: var(--valo-border-radius);
+      }
+
+      .info-panel .card h6 {
+        margin: 0;
+        flex: none;
+        border-bottom: 1px solid var(--valo-tint-20pct);
+        padding-bottom: 0.3em;
+        font-weight: 500;
+        color: inherit;
+        text-transform: capitalize;
+      }
+
+      .info-panel .card :not(h6) {
+        margin: auto;
+      }
+
+      .info-panel .card:first-child {
+        background-color: var(--valo-success-color);
+        color: var(--valo-success-contrast-color);
+        margin-bottom: 16px;
+      }
+
+      .info-panel .card h3 {
+        color: var(--valo-success-contrast-color);
+        font-size: 32px;
+        font-weight: 400;
+        letter-spacing: -0.02em;
+      }
+
+      @media (max-width: 800px) {
+        vaadin-navbar-layout {
+          --vaadin-navbar-layout-content-max-width: 100%;
+        }
+
+        [slot="content"] {
+          flex-direction: column;
+        }
+
+        vaadin-grid {
+          max-width: var(--vaadin-navbar-layout-content-max-width);
+        }
+
+        .info-panel {
+          display: flex;
+        }
+
+        .info-panel .card:last-child {
+          flex: auto;
+        }
+      }
+
+      @media (max-width: 800px) and (min-height: 601px) {
+        vaadin-grid {
+          height: calc(100% - 160px);
+        }
+
+        .info-panel .card {
+          min-height: 0;
+        }
+
+        .info-panel .card:first-child {
+          margin-right: 16px;
+          margin-bottom: 0;
+        }
+
+        .info-panel .card:last-child {
+          min-width: 300px;
+        }
+      }
+
+      @media (max-width: 800px) and (max-height: 600px) {
+        vaadin-grid {
+          height: 100%;
+        }
+
+        .info-panel {
+          display: none;
+        }
+      }
+
+      @media (max-width: 600px) and (min-height: 601px) {
+        .info-panel {
+          order: -1;
+        }
+
+        vaadin-navbar-layout[search-active] .info-panel {
+          display: none;
+        }
+
+        vaadin-navbar-layout[search-active] vaadin-grid {
+          height:100%;
+        }
+      }
+
+      [slot="user-menu"] vaadin-button {
+        min-width: 0;
       }
     </style>
   </custom-style>
@@ -70,41 +276,119 @@
       opacity: 0;
     }
   </style>
+
+  <!-- TODO the ”small” theme should be somehow exposed from the internal text-field -->
+  <dom-module id="date-picker-small-theme" theme-for="vaadin-date-picker">
+    <template>
+      <style>
+        :host([theme~="small"]) [part="text-field"] {
+          --valo-size: var(--valo-size-s);
+          font-size: var(--valo-font-size-s);
+          width: 150px;
+        }
+      </style>
+    </template>
+  </dom-module>
 </head>
 
 <body unresolved>
 
   <vaadin-navbar-layout>
     <vaadin-navbar slot="menubar">
-      <div slot="branding">Café<br>Sunshine</div>
+      <div slot="branding">Expense<br>Manager</div>
 
-      <vaadin-nav-item icon="valo:edit" label="Storefront" selected></vaadin-nav-item>
-      <vaadin-nav-item icon="valo:clock" label="Dashboard"></vaadin-nav-item>
-      <vaadin-nav-item icon="valo:user" label="Users"></vaadin-nav-item>
-      <vaadin-nav-item icon="valo:calendar" label="Products"></vaadin-nav-item>
-      <vaadin-nav-item icon="valo:cog" label="Admin"></vaadin-nav-item>
+      <vaadin-nav-item icon="valo:edit" label="Expenses" selected></vaadin-nav-item>
+      <vaadin-nav-item icon="valo:clock" label="Archive"></vaadin-nav-item>
+      <!-- <vaadin-nav-item icon="valo:user" label="Users"></vaadin-nav-item> -->
+      <!-- <vaadin-nav-item icon="valo:calendar" label="Products"></vaadin-nav-item> -->
+      <!-- <vaadin-nav-item icon="valo:cog" label="Admin"></vaadin-nav-item> -->
 
       <!-- TODO the user menu should be a custom element -->
-      <vaadin-button theme="tertiary small contrast icon" slot="user-menu">
+      <!-- <vaadin-button theme="tertiary small contrast" slot="user-menu">
         <vaadin-avatar small badge-top-right></vaadin-avatar>
-        <span>Kate</span>
-        <iron-icon icon="valo:dropdown"></iron-icon>
-      </vaadin-button>
+        <span>Kate</span><iron-icon icon="valo:dropdown"></iron-icon>
+      </vaadin-button> -->
+
+      <div slot="user-menu">
+        <vaadin-button theme="tertiary small contrast">Info</vaadin-button>
+        <vaadin-button theme="tertiary small contrast">Log out</vaadin-button>
+      </div>
     </vaadin-navbar>
 
-    <vaadin-text-field placeholder="Search orders" slot="search-field">
+    <vaadin-autocomplete placeholder="Search" slot="search-field" theme="no-toggle-button" items='["Airline", "Hotel", "Shuttle", "Parking", "Taxi", "Breakfast", "Electronics"]' allow-custom-value>
       <iron-icon icon="valo:magnifier" slot="prefix"></iron-icon>
-    </vaadin-text-field>
+    </vaadin-autocomplete>
 
-    <vaadin-checkbox slot="search-tools">Show past orders</vaadin-checkbox>
-    <vaadin-checkbox slot="search-tools">Another option</vaadin-checkbox>
+    <div slot="search-tools" class="date">
+      <vaadin-date-picker placeholder="From" theme="small"></vaadin-date-picker>
+      <span class="separator">&ndash;</span>
+      <vaadin-date-picker placeholder="To" theme="small"></vaadin-date-picker>
+    </div>
+
+    <div slot="search-tools" class="min-max">
+      <vaadin-text-field placeholder="Min" theme="small">
+        <span slot="prefix">$</span>
+      </vaadin-text-field>
+      <span class="separator">&ndash;</span>
+      <vaadin-text-field placeholder="Max" theme="small">
+        <span slot="prefix">$</span>
+      </vaadin-text-field>
+    </div>
+
+    <div slot="search-tools" class="status">
+      <vaadin-checkbox checked>New</vaadin-checkbox>
+      <vaadin-checkbox checked>In Progress</vaadin-checkbox>
+      <vaadin-checkbox checked>Reimbursed</vaadin-checkbox>
+    </div>
 
     <vaadin-button theme="primary icon" slot="tools">
       <iron-icon icon="valo:plus"></iron-icon>
-      <span>New order</span>
     </vaadin-button>
 
-    <ul slot="content">
+    <div slot="content">
+      <dom-bind>
+        <template>
+          <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{users}}"></iron-ajax>
+
+          <vaadin-grid items="[[users.result]]" theme="wrap-cell-content row-dividers">
+            <vaadin-grid-column width="9em">
+              <template class="header">
+                <vaadin-grid-sorter path="firstName">First Name</vaadin-grid-sorter>
+              </template>
+            <template>[[item.firstName]]</template>
+          </vaadin-grid-column>
+
+          <vaadin-grid-column width="9em">
+            <template class="header">
+              <vaadin-grid-sorter path="lastName">Last Name</vaadin-grid-sorter>
+            </template>
+            <template>[[item.lastName]]</template>
+          </vaadin-grid-column>
+
+          <vaadin-grid-column width="15em" flex-grow="2">
+            <template class="header">
+              <vaadin-grid-sorter path="address.street">Address</vaadin-grid-sorter>
+            </template>
+            <template>[[item.address.street]], [[item.address.city]]</template>
+          </vaadin-grid-column>
+        </vaadin-grid>
+      </template>
+    </dom-bind>
+
+    <div class="info-panel">
+      <div class="card">
+        <h6>To be reimbursed</h6>
+        <h3>$910.65</h3>
+      </div>
+
+      <div class="card">
+        <h6>Last 12 months in total</h6>
+        <div>Bar chart</div>
+      </div>
+    </div>
+  </div>
+
+    <!-- <ul slot="content">
       <li>Lorem ipsum dolor</li>
       <li>Sit amet, consectetur</li>
       <li>Adipisicing elit, sed</li>
@@ -142,7 +426,7 @@
       <li>Augue. Integer quam</li>
       <li>Nunc, consequat nec</li>
       <li>Egestas ac, volutpat</li>
-    </ul>
+    </ul> -->
   </vaadin-navbar-layout>
 
 </body>

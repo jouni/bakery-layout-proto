@@ -1,0 +1,56 @@
+<link rel="import" href="bower_components/vaadin-combo-box/vaadin-combo-box.html">
+
+<!-- Hide the toggle button -->
+<dom-module id="vaadin-autocomplete-default-theme">
+  <template>
+    <style>
+      [part="toggle-button"] {
+        display: none;
+      }
+    </style>
+  </template>
+</dom-module>
+
+<!-- TODO this should only target the autocomplete overlay. Now it targets all combo boxes  -->
+<dom-module id="vaadin-autocomplete-overlay" theme-for="vaadin-combo-box-overlay">
+  <template>
+    <style>
+      :host([loading]) [part="overlay"] {
+        display: none;
+      }
+    </style>
+  </template>
+</dom-module>
+
+<script>
+  (function() {
+    class AutocompleteElement extends Vaadin.ComboBoxElement {
+      static get is() {
+        return 'vaadin-autocomplete';
+      }
+
+      ready() {
+        super.ready();
+
+        // Abuse the magic 'loading' property, which is reflected to the overlay, to hide the overlay by default
+        this.addEventListener('focus', () => {
+          this.loading = true;
+        });
+
+        this.addEventListener('keydown', () => {
+          this.loading = false;
+        });
+
+        // TODO should override the default filtering
+      }
+    }
+
+    customElements.define(AutocompleteElement.is, AutocompleteElement);
+
+    /**
+     * @namespace Vaadin
+     */
+    window.Vaadin = window.Vaadin || {};
+    Vaadin.AutocompleteElement = AutocompleteElement;
+  })();
+</script>
