@@ -103,11 +103,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             value: false
           }
 
-        }
+        };
       }
 
       static get observers() {
-        return ['__updateSelection(multi, items.*)']
+        return ['__updateSelection(multi, items.*)'];
       }
 
       constructor() {
@@ -220,7 +220,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // order: selected array index
         this.__selectedMap = new Map();
         // Initialize selection
-        this.selected = this.multi ? [] : null
+        this.selected = this.multi ? [] : null;
         this.selectedItem = null;
       }
 
@@ -414,7 +414,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   class ArraySelector extends baseArraySelector {
     // Not needed to find template; can be removed once the analyzer
     // can find the tag name from customElements.define call
-    static get is() { return 'array-selector' }
+    static get is() { return 'array-selector'; }
   }
   customElements.define(ArraySelector.is, ArraySelector);
   Polymer.ArraySelector = ArraySelector;

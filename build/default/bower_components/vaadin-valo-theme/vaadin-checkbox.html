@@ -46,26 +46,25 @@
         height: calc(1em + 2px);
         flex: none;
         margin: 0.1875em;
-        transition: transform 0.5s;
-        will-change: transform;
         position: relative;
         border-radius: 4px;
         background-color: var(--valo-contrast-20pct);
-        transition: transform 0.2s cubic-bezier(.12,.32,.54,2), background-color 0.15s;
+        transition: transform 0.2s cubic-bezier(.12, .32, .54, 2), background-color 0.15s;
         pointer-events: none;
         will-change: transform;
         line-height: 1.2;
       }
 
       /* IE11 only */
-      *::-ms-backdrop, [part="checkbox"] {
+      ::-ms-backdrop,
+      [part="checkbox"] {
         line-height: 1;
       }
 
       /* Used for activation "halo" */
       [part="checkbox"]::before {
         /* Needed to align the checkbox nicely on the baseline */
-        content: "x";
+        content: "\2003";
         color: transparent;
         display: inline-block;
         width: 100%;

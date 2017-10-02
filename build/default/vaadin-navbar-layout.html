@@ -8,7 +8,7 @@
         flex-direction: column;
         height: 100%;
         overflow: hidden;
-        background-color: var(--valo-contrast-5pct);
+        background-color: var(--valo-shade-5pct);
         --menubar-height: 64px;
       }
 
@@ -39,8 +39,6 @@
         .app-header {
           box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.1);
           order: 1;
-          /*top: auto;
-          bottom: 0;*/
         }
 
         .app-header::before {
@@ -60,17 +58,19 @@
 
       .menubar,
       .toolbar {
-        background-color: #fff;
+        background-color: var(--valo-base-color);
         position: relative;
       }
 
       .app-content {
         flex: auto;
-        padding: 16px;
+        /*padding: 16px;*/
         box-sizing: border-box;
-        overflow: auto;
-        -webkit-overflow-scrolling: touch;
+        /*overflow: auto;
+        -webkit-overflow-scrolling: touch;*/
+        overflow: hidden;
         transition: 0.2s margin-top, 0.2s margin-bottom;
+        height: 100%;
       }
 
       .toolbar::before {
@@ -80,7 +80,7 @@
         left: 0;
         right: 0;
         height: 100%;
-        background-color: var(--valo-contrast-10pct);
+        background-color: var(--valo-shade-20pct);
         opacity: 0;
         transition: 0.3s opacity;
         will-change: opacity;
@@ -90,8 +90,9 @@
       .toolbar > .wrapper {
         flex: auto;
         display: flex;
-        max-width: 960px;
-        margin: 0 auto;
+        max-width: var(--vaadin-navbar-layout-content-max-width, 960px);
+        margin-left: var(--vaadin-navbar-layout-toolbar-margin-left, auto);
+        margin-right: var(--vaadin-navbar-layout-toolbar-margin-right, auto);
         padding: 8px 16px;
         box-sizing: border-box;
       }
@@ -101,12 +102,28 @@
         display: flex;
         align-items: center;
         flex-wrap: wrap;
+        min-width: 0;
+        position: relative;
+        z-index: 1;
+        margin-right: 8px;
       }
 
       .search ::slotted([slot=search-field]) {
         flex: auto;
-        margin-right: 8px;
         min-width: 50%;
+      }
+
+      .clear-search {
+        align-self: flex-start;
+        flex: none;
+        margin-right: 0;
+        margin-left: 0;
+      }
+
+      .search-tools {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
       }
 
       .search-tools,
@@ -132,11 +149,14 @@
       }
 
       @media screen and (max-width: 600px) {
-        .toolbar > .wrapper,
-        .app-content {
+        .toolbar > .wrapper {
+          padding: 4px 8px;
+        }
+
+        /*.app-content {
           padding-left: 8px;
           padding-right: 8px;
-        }
+        }*/
       }
 
       .menubar {
@@ -226,21 +246,36 @@
             this.toolbar.style.transition = '';
           }.bind(this));
 
-          this.field.addEventListener('focus', function(e) {
-            this.toggleSearch(true);
+          this.addEventListener('focusin', function(e) {
+            if (this._ios && /vaadin-text-field|vaadin-combo-box|vaadin-autocomplete/i.test(e.target.nodeName)) {
+              this._compensateForOnScreenKeyboard();
+            }
           }.bind(this));
 
-          this.field.addEventListener('blur', function(e) {
-            if (this.field.value.length == 0) {
-              this.toggleSearch(false);
-            }
-
-            if (this._ios) {
+          this.addEventListener('focusout', function(e) {
+            if (this._ios && /vaadin-text-field|vaadin-combo-box|vaadin-autocomplete/i.test(e.target.nodeName)) {
               document.body.style.height = '';
             }
           }.bind(this));
 
+          this.field.addEventListener('focus', function(e) {
+            this.toggleSearch(true);
+          }.bind(this));
+
+          this.addEventListener('keydown', function(e) {
+            if (e.keyCode == 27) {
+              if (/vaadin-date-picker|vaadin-combo-box|vaadin-autocomplete/i.test(e.target.nodeName)) {
+                if (e.target.opened) {
+                  return;
+                }
+              }
+              this.field.blur();
+              this.toggleSearch(false);
+            }
+          }.bind(this), true);
+
           this.root.querySelector('.clear-search').addEventListener('click', function(e) {
+            // TODO should reset all search tools to default values (the developer should probably listen for an event and do that)
             this.toggleSearch(false);
           }.bind(this));
         }
@@ -255,9 +290,11 @@
           // Trigger the ending measures
           if (active) {
             this.root.querySelector('.app-header').classList.add("search-active");
+            this.setAttribute('search-active', '');
           } else {
             this.field.value = '';
             this.root.querySelector('.app-header').classList.remove("search-active");
+            this.removeAttribute('search-active');
           }
 
           // Get the ending measures
@@ -277,19 +314,26 @@
             this.toolbar.style.height = toolbarEnd.height + 'px';
           }.bind(this));
 
+
+          // if (active && this._ios) {
+          //   this._compensateForOnScreenKeyboard();
+          // }
+        }
+
+        _compensateForOnScreenKeyboard() {
           // Compensate for iOS on-screen-keyboard.
           // The keyboard transition/animation takes around 100-300ms
-          if (active && this._ios) {
-            setTimeout(function() {
-              var offset = document.body.getBoundingClientRect();
-              document.body.style.height = `calc(100% - ${-offset.top - 10}px)`;
-              // To get a smoother experience, we could try transitioning scrollTop with JS, to
-              // compensate for iOS’s own transition (less jarring jump for the end user in the end)
-              document.body.scrollTop = 0;
-            }.bind(this), 150);
-          }
+          setTimeout(function() {
+            var offset = document.body.getBoundingClientRect();
+            document.body.style.height = `calc(100% - ${-offset.top - 10}px)`;
+            // To get a smoother experience, we could try transitioning scrollTop with JS, to
+            // compensate for iOS’s own transition (less jarring jump for the end user in the end)
+            document.body.scrollTop = 0;
+          }.bind(this), 300);
         }
       }
+
+
 
       customElements.define(NavbarLayoutElement.is, NavbarLayoutElement);
 

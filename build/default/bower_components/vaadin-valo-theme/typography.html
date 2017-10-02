@@ -1,8 +1,12 @@
+<link rel="import" href="../polymer/lib/elements/custom-style.html">
+
 <custom-style>
   <style>
     html {
+      /* Font families */
       --valo-font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Segoe UI", Ubuntu, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
+      /* Font sizes */
       --valo-font-size-xxxl: 36px;
       --valo-font-size-xxl: 28px;
       --valo-font-size-xl: 22px;
@@ -11,10 +15,12 @@
       --valo-font-size-s: 14px;
       --valo-font-size-xs: 13px;
 
+      /* Line heights */
       --valo-line-height: 1.625;
       --valo-line-height-s: 1.375;
       --valo-line-height-xs: 1.25;
     }
+
   </style>
 </custom-style>
 
@@ -30,8 +36,13 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      h1, h2, h3, h4, h5, h6 {
-        color: var(--valo-contrast);
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        color: var(--valo-header-text-color);
         font-weight: 600;
         line-height: var(--valo-line-height-xs);
       }
@@ -58,6 +69,14 @@
 
       h6 {
         font-size: var(--valo-font-size-s);
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
       }
     </style>
   </template>

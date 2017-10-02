@@ -50,7 +50,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     </style>
 
-    <label part="wrapper" id="label" on-click="_handleClick">
+    <label part="wrapper" id="label">
       <input id="nativeCheckbox" type="checkbox" part="native-checkbox" checked="{{checked::change}}" disabled$="[[disabled]]" indeterminate="{{indeterminate::change}}" role="presentation" tabindex="-1">
 
       <span part="checkbox"></span>
@@ -66,7 +66,7 @@ This program is available under Apache License Version 2.0, available at https:/
       throw new Error(`Unexpected Polymer version ${Polymer.version} is used, expected v2.0.0 or later.`);
     }
 
-    (function() {
+    {
       /**
        * `<vaadin-checkbox>` is a Polymer 2 element for customized checkboxes.
        *
@@ -78,7 +78,9 @@ This program is available under Apache License Version 2.0, available at https:/
        *
        * ### Styling
        *
-       * The following shadow DOM parts are exposed for styling:
+       * [Generic styling/theming documentation](https://cdn.vaadin.com/vaadin-valo-theme/0.3.1/demo/customization.html)
+       *
+       * The following shadow DOM parts are available for styling:
        *
        * Part name         | Description
        * ------------------|----------------
@@ -87,7 +89,7 @@ This program is available under Apache License Version 2.0, available at https:/
        * `checkbox`        | The `<span>` element for a custom graphical check
        * `label`           | The `<span>` element for slotted text/HTML label
        *
-       * The following attributes are exposed for styling:
+       * The following state attributes are available for styling:
        *
        * Attribute    | Description
        * -------------|------------
@@ -95,6 +97,8 @@ This program is available under Apache License Version 2.0, available at https:/
        * `disabled`   | Set when the checkbox is disabled.
        * `focus-ring` | Set when the checkbox is focused using the keyboard.
        * `focused`    | Set when the checkbox is focused.
+       * `indeterminate` | Set when the checkbox is in indeterminate mode.
+       * `checked` | Set when the checkbox is checked.
        *
        * @memberof Vaadin
        * @mixes Vaadin.ControlStateMixin
@@ -152,6 +156,8 @@ This program is available under Apache License Version 2.0, available at https:/
           super.ready();
 
           this.setAttribute('role', 'checkbox');
+
+          this.addEventListener('click', this._handleClick.bind(this));
 
           this._addActiveListeners();
         }
@@ -230,6 +236,6 @@ This program is available under Apache License Version 2.0, available at https:/
        */
       window.Vaadin = window.Vaadin || {};
       Vaadin.CheckboxElement = CheckboxElement;
-    })();
+    }
   </script>
 </dom-module>

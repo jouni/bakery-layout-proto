@@ -1,0 +1,140 @@
+<!--
+@license
+Copyright (c) 2017 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+--><script>
+  window.Vaadin = window.Vaadin || {};
+  Vaadin.Grid = Vaadin.Grid || {};
+
+  /**
+   * @polymerMixin
+   */
+  Vaadin.Grid.SelectionMixin = superClass => class SelectionMixin extends superClass {
+
+    static get properties() {
+      return {
+        /**
+        * An array that contains the selected items.
+        */
+        selectedItems: {
+          type: Object,
+          notify: true,
+          value: () => []
+        }
+      };
+    }
+
+    static get observers() {
+      return [
+        '_selectedItemsChanged(selectedItems.*)'
+      ];
+    }
+
+    ready() {
+      super.ready();
+      this.addEventListener('template-instance-changed', this._templateInstanceChangedSelection.bind(this));
+    }
+
+    _templateInstanceChangedSelection(e) {
+      if (e.detail.prop === 'selected') {
+        const item = e.detail.inst.item;
+        (this._isSelected(item) ? this.deselectItem : this.selectItem).call(this, item);
+
+        this.dispatchEvent(new CustomEvent('iron-announce', {
+          bubbles: true,
+          composed: true,
+          detail: {
+            text: (this._isSelected(item) ? 'Selected' : 'Deselected') + ' Row ' + (e.detail.inst.index + 1) + ' of ' + this.size
+          }
+        }));
+
+        // stop this internal event from propagating outside.
+        e.stopPropagation();
+      }
+    }
+
+    _isSelected(item) {
+      return this.selectedItems && this.selectedItems.indexOf(item) > -1;
+    }
+
+    /**
+     * Selects the given item.
+     *
+     * @method selectItem
+     * @param {number|Object} item The item index or the item object
+     */
+    selectItem(item) {
+      item = this._takeItem(item);
+      if (!this._isSelected(item)) {
+        this.push('selectedItems', item);
+      }
+    }
+
+    /**
+     * Deselects the given item if it is already selected.
+     *
+     * @method deselect
+     * @param {number|Object} item The item index or the item object
+     */
+    deselectItem(item) {
+      item = this._takeItem(item);
+      const index = this.selectedItems.indexOf(item);
+      if (index > -1) {
+        this.splice('selectedItems', index, 1);
+      }
+    }
+
+    /**
+     * Toggles the selected state of the given item.
+     *
+     * @method toggle
+     * @param {number|Object} item The item index or the item object
+     */
+    _toggleItem(item) {
+      item = this._takeItem(item);
+      const index = this.selectedItems.indexOf(item);
+      if (index === -1) {
+        this.selectItem(item);
+      } else {
+        this.deselectItem(item);
+      }
+    }
+
+    /**
+     * Returns item object itself or by the item index.
+     *
+     * @param {number|Object} item The item index or the item object
+     */
+    _takeItem(item) {
+      if (typeof item === 'number' && item >= 0 && this.items && this.items.length > item) {
+        return this.items[item];
+      }
+      return item;
+    }
+
+    _selectedItemsChanged(e) {
+      if (this.$.items.children.length && (e.path === 'selectedItems' || e.path === 'selectedItems.splices')) {
+        Array.from(this.$.items.children).forEach(row => {
+          const selected = this._isSelected(row._item);
+          this._toggleAttribute('selected', selected, row);
+          Array.from(row.children).forEach(cell => {
+            if (cell._instance) {
+              cell._instance.selected = selected;
+            }
+          });
+        });
+      }
+    }
+
+    _selectedInstanceChangedCallback(instance, value) {
+      if (super._selectedInstanceChangedCallback) {
+        super._selectedInstanceChangedCallback(instance, value);
+      }
+      if (value) {
+        this.selectItem(instance.item);
+      } else {
+        this.deselectItem(instance.item);
+      }
+    }
+  };
+</script>
